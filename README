@@ -1,3 +1,10 @@
 Repository for CS224W project 
 
 Graph/Social Network analysis on Yelp data
+
+Instructions for running SQL Python script:
+1) Make sure createTables.py and schema.sql are in the same directory as the yelp dataset
+2) Make sure you have sqlite3 and json Python dependencies
+3) python createTables.py
+4) ???
+5) Profit!!! (table should be Yelp.db; schema in schema.sql)
