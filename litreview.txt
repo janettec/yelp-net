@@ -1,6 +1,8 @@
 SUMMARY OF PAPERS RELATED TO YELP DATA
 
-1. 
+1. A Social Network-Based Recommender System (SNRS)
+Authors: Jianming He, Wesley W. Chu
+Link: http://link.springer.com/chapter/10.1007%2F978-1-4419-6287-4_4
 
 
 2. 
