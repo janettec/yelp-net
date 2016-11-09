@@ -4,8 +4,20 @@ SUMMARY OF PAPERS RELATED TO YELP DATA
 Authors: Jianming He, Wesley W. Chu
 Link: http://link.springer.com/chapter/10.1007%2F978-1-4419-6287-4_4
 
+The authors propose an alternative to collaborative filtering called “social network-based recommender system” (SNRS). 
+In order to predict a user U’s rating for an item I, the system incorporates:
+	-U’s preference for items similar to I: P(U’s rating = k|item with same attributes as I)
+	-General acceptance of the target item I: P(rating = k|user with same attributes as U)
+	-Ratings of U’s immediate friends: P(U’s rating = k|ratings of I from U’s immediate friends)
+		> The way the authors propose doing this is using a “histogram” of rating differences to measure 
+		correlation between two users (see page 56)
+(For exact equation, see eq 4.3 on page 53)
+As an extension the authors also put forward an “iterative classification” method that incorporates the ratings of friends of friends (details/pseudocode on page 58).
+
+The dataset used to evaluate SNRS was from Yelp (specifically restaurant reviews). The authors specify that in general, 18.6% of the restaurants reviewed by a user were also reviewed by at least one of his/her friends (more than chance). They also found that if two reviewers are immediate friends, their reviews differ by 0.88 on average (std dev 0.89) versus 1.05 for non-friends (std dec 0.98). The authors evaluated their recommendations against multiple other systems including collaborative filtering, naive bases, using the average rating of immediate friends, and using the ratings of friends weighted by cosine similarity to the friend. SNRS was found to have the lowest mean average error (MAE), while collaborative filtering was found to have the highest. The coverage (percent of testing instances for which a method can make predictions) of all methods was relatively low, but collaborative filtering had the highest coverage, followed by SNRS with friends of friends (makes sense because CF does not require that the user have 3 friends/friends of friends who have rated the same restaurant). Collaborative filtering is also more negatively affected by data sparsity. SNRS is has lower MAE when the system does not take into consideration friends of friends (0.716 without versus 0.682 with). However, adding friends of friends doubles coverage suggesting that is still worthwhile. 
+
+The authors suggest several future directions, the most detailed of which is semantic filtering (ex: filtering to look at reviews from similar users that are focused on food to predict a rating specifically for food, looking at semantics in friends relationships, etc.). This was found to be helpful when evaluated on a dataset of 22 students who were asked to rate articles based on 3 factors and to specify which of the other students they agreed/disagreed with on average for each of these 3 factors. Other suggestions include taking into consideration “network value”/influence, trust, and “adoption values.”
 
 2. 
-
 
 3. 
