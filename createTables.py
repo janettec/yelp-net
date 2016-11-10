@@ -52,6 +52,10 @@ for line in file:
 	fans = int(parsed["fans"])
 	yelping_since = parsed["yelping_since"] + "-01"
 	c.execute("INSERT INTO Users VALUES (?, ?, ?, ?, ?)", (user_id, average_stars, review_count, fans, yelping_since))
+
+	friends = parsed["friends"]
+	for friend in friends:
+		c.execute("INSERT INTO Friends VALUES (?, ?)", (user_id, friend))
 print "Committing users"
 conn.commit()
 print "Finished %s users \n" % user_count

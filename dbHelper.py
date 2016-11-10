@@ -42,9 +42,6 @@ conn = sqlite3.connect('Yelp.db')
 conn.row_factory = sqlite3.Row
 
 # Treats string as SQL query and executes it
-#
-# NOTE: Potentially unsafe! Only perform when query isn't of form 
-# 	select _ from _ where _
 # @returns: [SQLite Cursor]
 def executeQuery(string):
 	return conn.execute(string).fetchall()
@@ -60,6 +57,9 @@ def selectBusinesses(select, where="1=1"):
 
 def selectUsers(select, where="1=1"):
 	return selectFromWhere(select, "Users", where)
+
+def selectFriendsOfUser(user_id, additional_where="1=1"):
+	return selectFromWhere("user2", "Users LEFT OUTER JOIN Friends ON user_id = user1", "user_id = \"%s\" AND %s" % (user_id, additional_where))
 
 def selectReviews(select, where="1=1"):
 	return selectFromWhere(select, "Reviews", where)
