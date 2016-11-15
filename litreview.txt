@@ -18,6 +18,27 @@ The dataset used to evaluate SNRS was from Yelp (specifically restaurant reviews
 
 The authors suggest several future directions, the most detailed of which is semantic filtering (ex: filtering to look at reviews from similar users that are focused on food to predict a rating specifically for food, looking at semantics in friends relationships, etc.). This was found to be helpful when evaluated on a dataset of 22 students who were asked to rate articles based on 3 factors and to specify which of the other students they agreed/disagreed with on average for each of these 3 factors. Other suggestions include taking into consideration “network value”/influence, trust, and “adoption values.”
 
-2. 
+2. Matrix Factorization Techniques for Recommender Systems
+Authors: Yehuda Koren, Robert Bell, Chris Volinsky
+Link: https://datajobs.com/data-science-repo/Recommender-Systems-%5BNetflix%5D.pdf
 
-3. 
+NOTE: This seems to be the paper that last year’s group based their model off of. Makes sense: seems like it’s the state of the art and is written by the winners of the Netflix challenge. 
+
+This paper focuses on latent factor models for collaborative filtering. Latent factor models characterize items and users based on ~20-100 factors. For items, each factor measures something like comedy versus drama, depth of character development, etc. For users, each factor measures how much a user tends to like movies with high scores on the corresponding movie factor. The model presented is based on matrix factorization. The factors are stored in vectors q_{i} (for the item) and p_{u} for the user. The most basic prediction of user u’s rating of item i (r_{ui}) is the dot product of the item and user vectors (q_{i}^{T}p_{u}).
+
+In order to compute the mapping from item/user to vectors q_{i}/p_{u}, the system minimizes the regularized square error (eq 2 on page 44). There are two ways to perform the minimization: stochastic gradient descent and alternating least squares. Alternating least squares rotates between fixing the q_{i}’s and fixing the p_{u}’s in order to make the optimization problem quadratic/convex; this method is suitable in situations where the system can use parallelization to speed it up and in cases where looping over every single training case (as is done in gradient descent) is not tractable. Generally, gradient descent is faster and easier though.
+
+To improve the model, we can add intercepts of the form b_{ui} = m + b_{i} + b_{u}, where m is the overall average rating, b_{u} is the deviation of user u and b_{i} is the derivation of user i (e.g. if the overall average rating is 3.7, Titanic is rated 0.5 starts above the average, and Joe is critical user who rates 0.3 starts lower than the bias term would be 3.7-0.5-0.3). 
+
+The authors also describe how additional input sources may be added to the model in order to help with the cold-start problem. They specifically describe how to enhance the user representation by adding additional sums of vectors that can represent demographic information or implicit preference to p_{u} (eq 6 on page 46). Using this same method, we could add information about a user’s social network or information about the semantics of a given user’s review text.
+
+The authors also discuss incorporating temporal dynamics by decomposing ratings into distinct terms. You can have item biases (b_{i}), user biases (b_{u}), and user preferences (p_{u}) as functions of time, which allows the model to capture how, say, the popularity of a movie changes over time.
+
+In systems centered around implicit feedback, the authors also explain the possibility of including a confidence level, allowing the model to give less weight to less meaningful observations (eq 8 on page 47).  
+
+
+3.
+
+
+
+ 
