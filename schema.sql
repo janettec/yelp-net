@@ -36,8 +36,7 @@ CREATE TABLE Reviews (
 	stars INTEGER,
 	review TEXT,
 	date DATE,
-	PRIMARY KEY (review_id)
-	FOREIGN KEY (user_id) REFERENCES Users(user_id),
+	PRIMARY KEY (review_id),
 	FOREIGN KEY (business_id) REFERENCES Businesses(business_id)
 );
 
@@ -54,6 +53,5 @@ CREATE TABLE Friends (
 	user1 TEXT NOT NULL,
 	user2 TEXT NOT NULL,
 	PRIMARY KEY (user1, user2),
-	FOREIGN KEY (user1) REFERENCES Users(user_id),
-	FOREIGN KEY (user2) REFERENCES Users(user_id)
+	FOREIGN KEY (user1) REFERENCES Users(user_id)
 );
