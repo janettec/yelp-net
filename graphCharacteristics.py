@@ -142,9 +142,65 @@ def busRevHist():
 	ax.set_xlabel('Number of Reviews')
 	plt.show()
 
+# def cosSimHist():
+# 	userIDs = [user['user_id'] for user in dbHelper.selectUsers('user_id')]
+# 	sims = []
+# 	for uid in userIDs:
+# 		friends = [friend[0] for friend in dbHelper.selectFriendsOfUser(uid)]
+
+
+
+
+def revHist():
+	revs = dbHelper.selectReviews('stars')
+	revs = [rev['stars'] for rev in revs]
+	hist = Counter(revs)
+
+	num = 0
+	totalRevs = 0
+
+	for rev in hist:
+		num += hist[rev] * rev
+		totalRevs += hist[rev]
+
+	avg = float(num) / float(totalRevs)
+	print "Average: %f" % avg
+
+	total = 0
+	for rev in revs:
+		total += (avg - float(rev)) ** 2
+	mse = float(total) / float(totalRevs)
+	print mse
+	print "MSE: %f" % mse
+
+	
+	sortedhist = []
+	for rev in hist:
+		sortedhist.append((rev, float(hist[rev]) / float(totalRevs)))
+	sortedhist.sort(key=lambda x: x[0])
+
+	ind = np.arange(5)  # the x locations for the groups
+	width = 0.35       # the width of the bars
+
+	fig, ax = plt.subplots()
+	rects1 = ax.bar([x[0] for x in sortedhist], [x[1] for x in sortedhist], width, color='b')
+
+	# add some text for labels, title and axes ticks
+	ax.set_ylabel('Proportion of Reviews')
+	ax.set_xticks(np.arange(6) + width / 2.0)
+	ax.set_xticklabels(('', '1', '2', '3', '4', '5'))
+	plt.show()
+
+	# n, bins, patches = plt.hist(revs, normed=1, facecolor='blue', alpha=0.75)
+	# plt.xlabel('Stars')
+	# plt.ylabel('Proportion of Reviews')
+	# plt.show()
 
 if __name__ == "__main__":
 	# userNet = createFriendNetwork()
+	# print userNet.GetNodes()
+	# print userNet.GetEdges()
+	revHist()
 	# GraphClustCoeff = snap.GetClustCf(userNet, -1)
 	# print "Clustering coefficient: %f" % GraphClustCoeff
 
@@ -154,5 +210,5 @@ if __name__ == "__main__":
 	# plotDegDistr(userNet)
 
 	# userRevHist()
-	busRevHist()
+	# busRevHist()
 	
