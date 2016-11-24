@@ -22,7 +22,7 @@ def parseUserFile():
     friends = set(f.split(','))
     words = {}
     wordsVec = w.split(',')
-    for i in range(0, len(wordsVec), 2):
+    for i in range(0, len(wordsVec) - 1, 2):
       words[wordsVec[i]] = wordsVec[i+1]
     users[u] = {}
     users[u]['ratings'] = ratings

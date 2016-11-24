@@ -14,7 +14,7 @@ for line in file:
 	
 	categories = parsed["categories"]
 	state = parsed["state"]
-	if "Restaurants" in categories and (state == "MLN" or state == "EDH"):
+	if state == "EDH" or state == "CA" or state == "IL" or state == "TX":
 		business_count += 1
 		if business_count % 500 == 0:
 			print "#" + str(business_count)
@@ -88,4 +88,4 @@ print "Committing users"
 conn.commit()
 conn.close()
 print "Finished %s users \n" % user_count
-	
+

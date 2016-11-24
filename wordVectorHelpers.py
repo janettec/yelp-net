@@ -20,6 +20,8 @@ def getCosSim(uid1, uid2):
 		return
 	v1 = userWordVecs[uid1]
 	v2 = userWordVecs[uid2]
+	if v1 is None or v2 is None:
+		return
 	num = np.dot(v1, v2)
 	denom = np.linalg.norm(v1) * np.linalg.norm(v2)
 	return num / denom
