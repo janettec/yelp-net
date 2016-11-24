@@ -7,6 +7,20 @@ stops = set(stopwords.words('english'))
 stemmer = Stemmer.Stemmer("english")
 file = open("graphAttributes.txt", "w+")
 
+stops.add("don't")
+stops.add("dont")
+stops.add("can't")
+stops.add("cant")
+stops.add("won't")
+stops.add("wont")
+stops.add("shouldn't")
+stops.add("shouldnt")
+stops.add("couldn't")
+stops.add("couldnt")
+stops.add("cannot")
+stops.add("i'm")
+stops.add("im")
+
 print "Creating friends map."
 friendsMap = {}
 friends = selectFromWhere("user1, user2", "Friends")
@@ -55,8 +69,9 @@ for user in users:
 		review_text = selectFromWhere("review", "Reviews", "review_id=\"%s\"" % review_id)[0]["review"]
 		review_arr = re.findall(r"[\w']+", review_text)
 		for word in review_arr:
-			word = stemmer.stemWord(word.lower())
-			if word not in stops:
+			word = word.lower()
+			if word not in stops and not word.isdigit():
+				word = stemmer.stemWord(word)
 				if word not in wordMap:
 					wordMap[word] = 0
 				wordMap[word] += 1
