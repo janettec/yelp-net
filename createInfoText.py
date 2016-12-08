@@ -5,21 +5,7 @@ from nltk.corpus import stopwords
 
 stops = set(stopwords.words('english'))
 stemmer = Stemmer.Stemmer("english")
-file = open("graphAttributes.txt", "w+")
-
-stops.add("don't")
-stops.add("dont")
-stops.add("can't")
-stops.add("cant")
-stops.add("won't")
-stops.add("wont")
-stops.add("shouldn't")
-stops.add("shouldnt")
-stops.add("couldn't")
-stops.add("couldnt")
-stops.add("cannot")
-stops.add("i'm")
-stops.add("im")
+file = open("graphAttributesCharlotte.txt", "w+")
 
 print "Creating friends map."
 friendsMap = {}
@@ -46,10 +32,11 @@ print "Finished creating review map"
 
 users = selectUsers("*")
 user_count = 0
+# allWords = {}
 for user in users:
 
 	user_count += 1
-	if user_count % 500 == 0:
+	if user_count % 10000 == 0:
 		print "User %s" % user_count
 	user_id = user["user_id"]
 	wroteReview, wroteFriend, wroteWords = False, False, False
@@ -75,6 +62,9 @@ for user in users:
 				if word not in wordMap:
 					wordMap[word] = 0
 				wordMap[word] += 1
+				# if word not in allWords:
+				# 	allWords[word] = 0
+				# allWords[word] += 1
 	line += "|"
 
 	friend_set = None
@@ -99,3 +89,8 @@ for user in users:
 
 	file.write(line + "\n")
 file.close()
+# print "Top 10 words:"
+# sortedWords = sorted(allWords.items(), key=lambda x: x[1], reverse=True)
+# for i in xrange(10):
+# 	word = sortedWords[i]
+# 	print word

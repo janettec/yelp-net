@@ -1,7 +1,7 @@
 import sqlite3
 import json
 
-conn = sqlite3.connect('YelpSubset.db')
+conn = sqlite3.connect('YelpCharlotte.db')
 sqliteScript = conn.executescript(open("schema.sql", "r").read())
 
 print "Opening businesses"
@@ -13,27 +13,28 @@ for line in file:
 	parsed = json.loads(line)
 	
 	categories = parsed["categories"]
-	state = parsed["state"]
-	if state == "EDH" or state == "CA" or state == "IL" or state == "TX":
+	city = parsed["city"]
+	
+	if city == "Charlotte":
 		business_count += 1
 		if business_count % 500 == 0:
 			print "#" + str(business_count)
 		business_id = parsed["business_id"]
 		review_count = int(parsed["review_count"])
 		name = parsed["name"]
+		state = parsed["state"]
 		longitude = float(parsed["longitude"])
 		latitude = float(parsed["latitude"])
 		stars = float(parsed["stars"])
 		attributeMap = parsed["attributes"]
 		price_range = 0 if "Price Range" not in attributeMap else attributeMap["Price Range"]
-		newTuple = (business_id, name, stars, state, longitude, latitude, review_count, price_range)	
+		newTuple = (business_id, name, stars, city, state, longitude, latitude, review_count, price_range)	
 		c = conn.cursor()
 		for category in categories:
 			c.execute("INSERT INTO Categories VALUES (?, ?)", (business_id, category))
-		c.execute("INSERT INTO Businesses VALUES (?, ?, ?, ?, ?, ?, ?, ?)", newTuple)
+		c.execute("INSERT INTO Businesses VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", newTuple)
 		business_set.add(business_id)
 
-	
 print "Committing businesses"
 conn.commit()
 print "Finished %s businesses \n" % business_count
@@ -62,7 +63,6 @@ print "Committing reviews"
 conn.commit()
 print "Finished %s reviews\n" % review_count
 
-
 print "Opening users"
 file = open("yelp_academic_dataset_user.json", "r")
 print "Parsing users"
@@ -88,4 +88,3 @@ print "Committing users"
 conn.commit()
 conn.close()
 print "Finished %s users \n" % user_count
-
