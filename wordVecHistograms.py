@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 from dbHelper import *
-import wordVectorHelpers
+#import wordVectorHelpers
+import jaccard
 
 calculatedSet = set()
 allCosSims = []

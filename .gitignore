@@ -6,3 +6,4 @@ Dataset_Challenge_Academic_Dataset_Agreement.pdf
 *.pyc
 GloVe-1.2/*
 glove.6B.50d.txt
+visualizations/*
