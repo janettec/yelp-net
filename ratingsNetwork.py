@@ -1,6 +1,7 @@
 import numpy as np
 import collections
 import random
+import wordVectorHelpers
 
 users = {}
 friend_ratings = {}
@@ -8,7 +9,7 @@ trainingRatings = set()
 testRatings = set()
 
 def parseUserFile():
-  f = open('graphAttributes.txt', 'r')
+  f = open('graphAttributesEdinburgh.txt', 'r')
   for line in f:
     u, r, f, w = line.split("|")
     ratings = set()
@@ -29,7 +30,7 @@ def parseUserFile():
     users[u]['friends'] = friends
     users[u]['words'] = words
 
-eta = 0.1
+eta = 0.05
 l = 0.4
 k = 20
 alpha = 0
@@ -47,13 +48,13 @@ def getAlpha():
   global alpha 
   alpha = float(total) / len(trainingRatings)
 
-def getFriendRatings():
+def getFriendRatings(threshold):
   for user in users:
     for item, rating in users[user]['ratings']:
       total = 0
       num = 0
       for friend in users[user]['friends']:
-        if friend:
+        if friend and wordVectorHelpers.getCosSim(user, friend) > threshold:
           for friend_item, friend_rating in users[friend]['ratings']:
             if item == friend_item:
               total += friend_rating
@@ -98,11 +99,11 @@ def baselineError():
 if __name__ == '__main__':
   parseUserFile()
   getAlpha()
-  print alpha
-  getFriendRatings()
+  getFriendRatings(threshold)
   gradientDescent()
   testError()
   trainingError()
   baselineError()
+
 
 
