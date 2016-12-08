@@ -4,6 +4,7 @@ import json
 conn = sqlite3.connect('Yelp.db')
 sqliteScript = conn.executescript(open("schema.sql", "r").read())
 
+setOfCities = {}
 print "Opening businesses"
 file = open("yelp_academic_dataset_business.json", "r")
 print "Parsing businesses"
@@ -20,13 +21,17 @@ for line in file:
 	name = parsed["name"]
 	longitude = float(parsed["longitude"])
 	latitude = float(parsed["latitude"])
+	city = parsed["city"]
+	if city not in setOfCities:
+		setOfCities[city] = 0
+	setOfCities[city] += 1
 	state = parsed["state"]
 	stars = float(parsed["stars"])
 	attributeMap = parsed["attributes"]
 	price_range = 0 if "Price Range" not in attributeMap else attributeMap["Price Range"]
 
-	newTuple = (business_id, name, stars, state, longitude, latitude, review_count, price_range)
-	c.execute("INSERT INTO Businesses VALUES (?, ?, ?, ?, ?, ?, ?, ?)", newTuple)
+	newTuple = (business_id, name, stars, city, state, longitude, latitude, review_count, price_range)
+	c.execute("INSERT INTO Businesses VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", newTuple)
 
 	categories = parsed["categories"]
 	for category in categories:
@@ -34,6 +39,9 @@ for line in file:
 print "Committing businesses"
 conn.commit()
 print "Finished %s businesses \n" % business_count
+sortedCities = sorted(setOfCities.items(), key = lambda x: x[1], reverse = True)
+for city, freq in sortedCities:
+	print "%s: %s" % (city, freq)
 
 print "Opening users"
 file = open("yelp_academic_dataset_user.json", "r")

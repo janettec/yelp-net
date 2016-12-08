@@ -10,6 +10,7 @@ CREATE TABLE Businesses (
 	business_id TEXT NOT NULL,
 	name TEXT,
 	stars REAL NOT NULL,
+	city TEXT,
 	state TEXT,
 	longitude REAL,
 	latitude REAL,
