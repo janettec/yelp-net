@@ -20,6 +20,8 @@ def getCosSim(uid1, uid2):
 		return
 	v1 = userWordVecs[uid1]
 	v2 = userWordVecs[uid2]
+	if v1 is None or v2 is None:
+		return
 	num = np.dot(v1, v2)
 	denom = np.linalg.norm(v1) * np.linalg.norm(v2)
 	return num / denom
@@ -36,7 +38,7 @@ def average(vecs):
 
 def getUserWordVecs():
 	global wordVecDict, userWordVecs
-	with open('graphAttributesCharlotte.txt') as f:
+	with open('graphAttributesLasVegas.txt') as f:
 		for line in f:
 			split = line.split('|')
 			userid = split[0]
@@ -54,11 +56,11 @@ def getUserWordVecs():
 				userWordVecs[userid] = wordVecs
 
 		users = userWordVecs.keys()
-		for user in users:
-			if len(userWordVecs[user]) == 0:
-				del userWordVecs[user]
-			else:
-				userWordVecs[user] = average(userWordVecs[user])
+		# for user in users:
+		# 	if len(userWordVecs[user]) == 0:
+		# 		del userWordVecs[user]
+		# 	else:
+		# 		userWordVecs[user] = average(userWordVecs[user])
 
 		for user in userWordVecs:
 			if len(userWordVecs[user]) == 0:

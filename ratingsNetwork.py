@@ -8,8 +8,12 @@ friend_ratings = {}
 trainingRatings = set()
 testRatings = set()
 
+# cosSimThreshold = 0.93
+# print "Cosine Simularity Threshold: ", cosSimThreshold
+
 def parseUserFile():
-  f = open('graphAttributesCharlotte.txt', 'r')
+  f = open('graphAttributesLasVegas.txt', 'r')
+  numFriends, friendsPruned, numUsers = 0, 0, 0
   for line in f:
     u, r, f, w = line.split("|")
     ratings = set()
@@ -20,16 +24,28 @@ def parseUserFile():
       else:
         trainingRatings.add((u, ratingsVec[i], int(ratingsVec[i+1])))
       ratings.add((ratingsVec[i], int(ratingsVec[i+1])))
+
     friends = set(f.split(','))
+    # friendCandidates = set(f.split(','))
+    # numFriends += len(friendCandidates)
+    # friends = set()
+    # for friend in friendCandidates:
+    #   cosSim = wordVectorHelpers.getCosSim(u, friend)
+    #   if cosSim is not None and cosSim >= cosSimThreshold:
+    #     friends.add(friend)
+    #   else:
+    #     friendsPruned += 1
+    # numUsers += 1
     # words = {}
     # wordsVec = w.split(',')
-    # if len(wordsVec) % 2 == 1: continue
-    # for i in range(0, len(wordsVec), 2):
+    # for i in range(0, len(wordsVec) - 1, 2):
     #   words[wordsVec[i]] = wordsVec[i+1]
     users[u] = {}
     users[u]['ratings'] = ratings
     users[u]['friends'] = friends
     # users[u]['words'] = words
+  # print "Average prunes: %s" % (friendsPruned / float(numUsers))
+  # print "Average friends: %s" % (numFriends / float(numUsers))
 
 eta = 0.05
 l = 0.4
@@ -55,7 +71,7 @@ def getFriendRatings(threshold):
       total = 0
       num = 0
       for friend in users[user]['friends']:
-        if friend:  #and wordVectorHelpers.getCosSim(user, friend) > threshold:
+        if friend:# and wordVectorHelpers.getCosSim(user, friend) > threshold:
           for friend_item, friend_rating in users[friend]['ratings']:
             if item == friend_item:
               total += friend_rating * wordVectorHelpers.getCosSim(user, friend)
