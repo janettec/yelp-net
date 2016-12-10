@@ -9,7 +9,7 @@ trainingRatings = set()
 testRatings = set()
 
 def parseUserFile():
-  f = open('graphAttributesEdinburgh.txt', 'r')
+  f = open('graphAttributesCharlotte.txt', 'r')
   for line in f:
     u, r, f, w = line.split("|")
     ratings = set()
@@ -21,14 +21,15 @@ def parseUserFile():
         trainingRatings.add((u, ratingsVec[i], int(ratingsVec[i+1])))
       ratings.add((ratingsVec[i], int(ratingsVec[i+1])))
     friends = set(f.split(','))
-    words = {}
-    wordsVec = w.split(',')
-    for i in range(0, len(wordsVec), 2):
-      words[wordsVec[i]] = wordsVec[i+1]
+    # words = {}
+    # wordsVec = w.split(',')
+    # if len(wordsVec) % 2 == 1: continue
+    # for i in range(0, len(wordsVec), 2):
+    #   words[wordsVec[i]] = wordsVec[i+1]
     users[u] = {}
     users[u]['ratings'] = ratings
     users[u]['friends'] = friends
-    users[u]['words'] = words
+    # users[u]['words'] = words
 
 eta = 0.05
 l = 0.4
@@ -54,11 +55,12 @@ def getFriendRatings(threshold):
       total = 0
       num = 0
       for friend in users[user]['friends']:
-        if friend and wordVectorHelpers.getCosSim(user, friend) > threshold:
+        if friend:  #and wordVectorHelpers.getCosSim(user, friend) > threshold:
           for friend_item, friend_rating in users[friend]['ratings']:
             if item == friend_item:
-              total += friend_rating
-              num += 1
+              total += friend_rating * wordVectorHelpers.getCosSim(user, friend)
+              num += wordVectorHelpers.getCosSim(user, friend) + 0.05
+              # num += 1
       friend_ratings[(user, item)] = 0 if total == 0 else total/float(num) - alpha
 
 
@@ -99,7 +101,7 @@ def baselineError():
 if __name__ == '__main__':
   parseUserFile()
   getAlpha()
-  getFriendRatings(threshold)
+  getFriendRatings(0.9)
   gradientDescent()
   testError()
   trainingError()

@@ -36,7 +36,7 @@ def average(vecs):
 
 def getUserWordVecs():
 	global wordVecDict, userWordVecs
-	with open('graphAttributesEdinburgh.txt') as f:
+	with open('graphAttributesCharlotte.txt') as f:
 		for line in f:
 			split = line.split('|')
 			userid = split[0]
@@ -53,7 +53,16 @@ def getUserWordVecs():
 			else:
 				userWordVecs[userid] = wordVecs
 
+		users = userWordVecs.keys()
+		for user in users:
+			if len(userWordVecs[user]) == 0:
+				del userWordVecs[user]
+			else:
+				userWordVecs[user] = average(userWordVecs[user])
+
 		for user in userWordVecs:
+			if len(userWordVecs[user]) == 0:
+				userWordVecs[user] = [[wordVecDict['children']]]
 			userWordVecs[user] = average(userWordVecs[user])
 		return userWordVecs
 
