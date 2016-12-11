@@ -1,7 +1,7 @@
 import sqlite3
 import json
 
-conn = sqlite3.connect('YelpLasVegas.db')
+conn = sqlite3.connect('YelpWaterloo.db')
 sqliteScript = conn.executescript(open("schema.sql", "r").read())
 
 print "Opening businesses"
@@ -15,7 +15,7 @@ for line in file:
 	categories = parsed["categories"]
 	city = parsed["city"]
 	
-	if city == "Las Vegas":
+	if city == "Waterloo":
 		business_count += 1
 		if business_count % 500 == 0:
 			print "#" + str(business_count)

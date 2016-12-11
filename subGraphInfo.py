@@ -4,6 +4,7 @@ Script assumes that graphs are saved as 'graphname.csv' where nodes are separate
 
 import snap
 import dbHelper
+import matplotlib.pyplot as plt
 
 def createFriendNetwork(filename):
 	userNetwork = snap.LoadEdgeList(snap.PUNGraph, filename, 0, 1, ',')
@@ -38,7 +39,6 @@ def plotDegDistr(G):
 	plt.show()
 
 if __name__ == "__main__":
-	G = createFriendNetwork("EdgeListLasVegas.csv")
-	diam = snap.GetBfsFullDiam(G, 50000, False)
-	print diam
-	
+	G = createFriendNetwork("EdgeListWaterloo.csv")
+	print snap.GetClustCf(G)
+	print snap.GetBfsFullDiam(G, G.GetNodes(), False)

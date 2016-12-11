@@ -1,7 +1,8 @@
 import snap
 import dbHelper
 import math
-import matplotlib.pyplot as plt
+
+
 import numpy as np
 from collections import Counter
 from sklearn import linear_model

@@ -38,7 +38,7 @@ from datetime import datetime
 # Implementation
 ##########################################################################################
 
-conn = sqlite3.connect('YelpCharlotte.db')
+conn = sqlite3.connect('YelpWaterloo.db')
 conn.row_factory = sqlite3.Row
 
 # Treats string as SQL query and executes it
