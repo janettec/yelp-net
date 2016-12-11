@@ -166,12 +166,12 @@ def revHist():
 	avg = float(num) / float(totalRevs)
 	print "Average: %f" % avg
 
-	total = 0
-	for rev in revs:
-		total += (avg - float(rev)) ** 2
-	mse = float(total) / float(totalRevs)
-	print mse
-	print "MSE: %f" % mse
+	# total = 0
+	# for rev in revs:
+	# 	total += (avg - float(rev)) ** 2
+	# mse = float(total) / float(totalRevs)
+	# print mse
+	# print "MSE: %f" % mse
 
 	
 	sortedhist = []

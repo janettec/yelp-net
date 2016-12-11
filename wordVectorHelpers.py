@@ -9,6 +9,7 @@ are GLOBAL variables
 
 import Stemmer
 import numpy as np
+import math
 
 stemmer = Stemmer.Stemmer('english')
 wordVecDict = {} # english word -> word vector
@@ -26,6 +27,17 @@ def getCosSim(uid1, uid2):
 	denom = np.linalg.norm(v1) * np.linalg.norm(v2)
 	return num / denom
 
+def getEuclideanDist(uid1, uid2):
+	if not uid1 in userWordVecs or not uid2 in userWordVecs:
+		print "ERROR: either uid1 or uid2 not in dict"
+		return
+	v1 = userWordVecs[uid1]
+	v2 = userWordVecs[uid2]
+	if v1 is None or v2 is None:
+		return
+	return math.sqrt(sum(pow(a-b,2) for a, b in zip(v1, v2)))
+
+
 def average(vecs):
 	numVecs = len(vecs)
 	if numVecs == 0:
@@ -38,7 +50,7 @@ def average(vecs):
 
 def getUserWordVecs():
 	global wordVecDict, userWordVecs
-	with open('graphAttributesLasVegas.txt') as f:
+	with open('graphAttributesWaterloo.txt') as f:
 		for line in f:
 			split = line.split('|')
 			userid = split[0]
@@ -95,5 +107,5 @@ if __name__ == "__main__":
 	# EXAMPLE USAGE
 	uid1 = 'VXbKx1v7MiwtYk6B9RhQ6g'
 	uid2 = '4RU4zU3yDA3ewvrqE6kHLg'
-	print(getCosSim(uid1, uid2))
+	print(getEuclideanDist(uid1, uid2))
 

@@ -13,18 +13,18 @@ crossValRatings = []
 # print "Cosine Simularity Threshold: ", cosSimThreshold
 
 def parseUserFile():
-  f = open('graphAttributesLasVegas.txt', 'r')
+  f = open('graphAttributesWaterloo.txt', 'r')
   numFriends, friendsPruned, numUsers = 0, 0, 0
   for line in f:
     u, r, f, w = line.split("|")
     ratings = set()
     ratingsVec = r.split(',')
     for i in range(0, len(ratingsVec), 2):
-      crossValRatings.append((u, ratingsVec[i], int(ratingsVec[i+1])))
-      # if random.random() > 0.8:
-      #   testRatings.add((u, ratingsVec[i], int(ratingsVec[i+1])))
-      # else:
-      #   trainingRatings.add((u, ratingsVec[i], int(ratingsVec[i+1])))
+      # crossValRatings.append((u, ratingsVec[i], int(ratingsVec[i+1])))
+      if random.random() > 0.8:
+        testRatings.add((u, ratingsVec[i], int(ratingsVec[i+1])))
+      else:
+        trainingRatings.add((u, ratingsVec[i], int(ratingsVec[i+1])))
       ratings.add((ratingsVec[i], int(ratingsVec[i+1])))
 
     friends = set(f.split(','))
@@ -142,13 +142,13 @@ def crossValidate():
 
 if __name__ == '__main__':
   parseUserFile()
-  crossValidate()
-  # getAlpha()
-  # getFriendRatings(0.9)
-  # gradientDescent()
-  # testError()
-  # trainingError()
-  # baselineError()
+  # crossValidate()
+  getAlpha()
+  getFriendRatings(0.9)
+  gradientDescent()
+  testError()
+  trainingError()
+  baselineError()
 
 
 
