@@ -7,6 +7,7 @@ users = {}
 friend_ratings = {}
 trainingRatings = set()
 testRatings = set()
+crossValRatings = []
 
 # cosSimThreshold = 0.93
 # print "Cosine Simularity Threshold: ", cosSimThreshold
@@ -19,10 +20,11 @@ def parseUserFile():
     ratings = set()
     ratingsVec = r.split(',')
     for i in range(0, len(ratingsVec), 2):
-      if random.random() > 0.8:
-        testRatings.add((u, ratingsVec[i], int(ratingsVec[i+1])))
-      else:
-        trainingRatings.add((u, ratingsVec[i], int(ratingsVec[i+1])))
+      crossValRatings.append((u, ratingsVec[i], int(ratingsVec[i+1])))
+      # if random.random() > 0.8:
+      #   testRatings.add((u, ratingsVec[i], int(ratingsVec[i+1])))
+      # else:
+      #   trainingRatings.add((u, ratingsVec[i], int(ratingsVec[i+1])))
       ratings.add((ratingsVec[i], int(ratingsVec[i+1])))
 
     friends = set(f.split(','))
@@ -74,9 +76,9 @@ def getFriendRatings(threshold):
         if friend:# and wordVectorHelpers.getCosSim(user, friend) > threshold:
           for friend_item, friend_rating in users[friend]['ratings']:
             if item == friend_item:
-              total += friend_rating * wordVectorHelpers.getCosSim(user, friend)
-              num += wordVectorHelpers.getCosSim(user, friend) + 0.05
-              # num += 1
+              total += friend_rating #* wordVectorHelpers.getCosSim(user, friend)
+              # num += wordVectorHelpers.getCosSim(user, friend) + 0.05
+              num += 1
       friend_ratings[(user, item)] = 0 if total == 0 else total/float(num) - alpha
 
 
@@ -114,14 +116,39 @@ def baselineError():
     error += (rating - alpha)**2
   print "BASELINE MSE: ", error/len(trainingRatings)
 
+def crossValidate():
+  global testRatings, trainingRatings
+  random.shuffle(crossValRatings)
+  numSamples = len(crossValRatings)
+  sectionSize = numSamples / 10
+  startIndices = range(0, numSamples, sectionSize)
+  startIndices = startIndices[:10]
+  print numSamples
+  print startIndices
+  for i in startIndices:
+    print "Section %d:" % (i / sectionSize)
+    endIndex = i + sectionSize if i != startIndices[-1] else numSamples
+    testRatings = set(crossValRatings[i:endIndex])
+    trainingRatings = set(crossValRatings[0:i] + crossValRatings[endIndex:])
+    reset()
+    getAlpha()
+    print alpha
+    getFriendRatings()
+    gradientDescent()
+    testError()
+    trainingError()
+    baselineTestError()
+    baselineTrainingError()
+
 if __name__ == '__main__':
   parseUserFile()
-  getAlpha()
-  getFriendRatings(0.9)
-  gradientDescent()
-  testError()
-  trainingError()
-  baselineError()
+  crossValidate()
+  # getAlpha()
+  # getFriendRatings(0.9)
+  # gradientDescent()
+  # testError()
+  # trainingError()
+  # baselineError()
 
 
 
