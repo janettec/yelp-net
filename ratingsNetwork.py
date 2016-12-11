@@ -20,11 +20,11 @@ def parseUserFile():
     ratings = set()
     ratingsVec = r.split(',')
     for i in range(0, len(ratingsVec), 2):
-      # crossValRatings.append((u, ratingsVec[i], int(ratingsVec[i+1])))
-      if random.random() > 0.8:
-        testRatings.add((u, ratingsVec[i], int(ratingsVec[i+1])))
-      else:
-        trainingRatings.add((u, ratingsVec[i], int(ratingsVec[i+1])))
+      crossValRatings.append((u, ratingsVec[i], int(ratingsVec[i+1])))
+      # if random.random() > 0.8:
+      #   testRatings.add((u, ratingsVec[i], int(ratingsVec[i+1])))
+      # else:
+      #   trainingRatings.add((u, ratingsVec[i], int(ratingsVec[i+1])))
       ratings.add((ratingsVec[i], int(ratingsVec[i+1])))
 
     friends = set(f.split(','))
@@ -73,7 +73,7 @@ def getFriendRatings(threshold):
       total = 0
       num = 0
       for friend in users[user]['friends']:
-        if friend:# and wordVectorHelpers.getCosSim(user, friend) > threshold:
+        if friend and wordVectorHelpers.getCosSim(user, friend) > threshold:
           for friend_item, friend_rating in users[friend]['ratings']:
             if item == friend_item:
               total += friend_rating #* wordVectorHelpers.getCosSim(user, friend)
@@ -103,6 +103,7 @@ def testError():
   for user, item, rating in testRatings:
     error += (rating - predict(user, item))**2
   print "TEST MSE: ", error/len(testRatings)
+  return error/len(testRatings)
 
 def trainingError():
   error = 0
@@ -116,15 +117,22 @@ def baselineError():
     error += (rating - alpha)**2
   print "BASELINE MSE: ", error/len(trainingRatings)
 
+def reset():
+  global user_bias, item_bias, friend_bias, p, q
+  user_bias = collections.defaultdict(int)
+  item_bias = collections.defaultdict(int)
+  friend_bias = collections.defaultdict(int)
+  p = collections.defaultdict(lambda: [random.random() * (0.6) for _ in range(k)])
+  q = collections.defaultdict(lambda: [random.random() * (0.6) for _ in range(k)])
+
 def crossValidate():
+  msevals = []
   global testRatings, trainingRatings
   random.shuffle(crossValRatings)
   numSamples = len(crossValRatings)
   sectionSize = numSamples / 10
   startIndices = range(0, numSamples, sectionSize)
   startIndices = startIndices[:10]
-  print numSamples
-  print startIndices
   for i in startIndices:
     print "Section %d:" % (i / sectionSize)
     endIndex = i + sectionSize if i != startIndices[-1] else numSamples
@@ -132,23 +140,23 @@ def crossValidate():
     trainingRatings = set(crossValRatings[0:i] + crossValRatings[endIndex:])
     reset()
     getAlpha()
-    print alpha
-    getFriendRatings()
+    getFriendRatings(0.9)
     gradientDescent()
-    testError()
+    msevals.append(testError())
     trainingError()
-    baselineTestError()
-    baselineTrainingError()
+    baselineError()
+  print "CROSS VALIDATION MEAN MSE: ", np.mean(msevals)
+  print "CROSS VALIDATION STD MSE: ", np.std(msevals)
 
 if __name__ == '__main__':
   parseUserFile()
-  # crossValidate()
-  getAlpha()
-  getFriendRatings(0.9)
-  gradientDescent()
-  testError()
-  trainingError()
-  baselineError()
+  crossValidate()
+  # getAlpha()
+  # getFriendRatings(0.9)
+  # gradientDescent()
+  # testError()
+  # trainingError()
+  # baselineError()
 
 
 
